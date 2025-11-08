@@ -2,6 +2,8 @@
 
 A simple, static-only flipbook viewer built with Next.js. Perfect for personal use - no backend required!
 
+> 📖 **For detailed build instructions and architecture documentation, see [BUILD_GUIDE.md](./BUILD_GUIDE.md)**
+
 ## Features
 
 - 📖 Beautiful page-flip animation using `react-pageflip`
