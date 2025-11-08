@@ -1,36 +1,151 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Static Flipbook Site
 
-## Getting Started
+A simple, static-only flipbook viewer built with Next.js. Perfect for personal use - no backend required!
 
-First, run the development server:
+## Features
+
+- 📖 Beautiful page-flip animation using `react-pageflip`
+- 🎨 Modern, responsive UI
+- ⌨️ Keyboard navigation (arrow keys)
+- 📱 Mobile-friendly
+- 🚀 Static site generation - deploy anywhere
+
+## Quick Start
+
+### 1. Install Dependencies
+
+```bash
+npm install
+```
+
+### 2. Add Your Books
+
+#### Option A: Using ImageMagick (Recommended)
+
+```bash
+# Install ImageMagick
+brew install imagemagick  # Mac
+# or
+sudo apt install imagemagick  # Linux
+
+# Convert PDF to images
+convert -density 150 input.pdf -quality 90 public/books/my-book/page-%d.jpg
+```
+
+#### Option B: Using Node.js Script
+
+```bash
+# Install conversion dependencies
+npm install pdfjs-dist canvas sharp
+
+# Convert PDF
+node scripts/convert-pdf.js input.pdf public/books/my-book
+```
+
+### 3. Update Metadata
+
+Edit `data/books.json` to add your book:
+
+```json
+{
+  "slug": "my-book",
+  "title": "My Book Title",
+  "cover": "/books/my-book/page-1.jpg",
+  "pageCount": 24
+}
+```
+
+### 4. Run Development Server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Visit `http://localhost:3000` to see your flipbooks.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 5. Build & Deploy
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+# Build static site
+npm run build
 
-## Learn More
+# Deploy to Vercel
+vercel
 
-To learn more about Next.js, take a look at the following resources:
+# Or deploy to Netlify
+netlify deploy --prod
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Project Structure
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+flip-book/
+├── app/
+│   ├── page.tsx              # Home page (book list)
+│   └── book/[slug]/page.tsx  # Book viewer
+├── components/
+│   └── FlipBook.tsx          # Flipbook component
+├── data/
+│   └── books.json            # Book metadata
+├── public/
+│   └── books/                # Book images
+│       ├── my-magazine/
+│       │   ├── page-1.jpg
+│       │   ├── page-2.jpg
+│       │   └── ...
+│       └── product-catalog/
+│           └── ...
+└── scripts/
+    └── convert-pdf.js        # PDF conversion script
+```
 
-## Deploy on Vercel
+## Adding a New Book
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. **Convert PDF to images:**
+   ```bash
+   mkdir -p public/books/my-new-book
+   convert -density 150 my-book.pdf -quality 90 public/books/my-new-book/page-%d.jpg
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+2. **Add to `data/books.json`:**
+   ```json
+   {
+     "slug": "my-new-book",
+     "title": "My New Book",
+     "cover": "/books/my-new-book/page-1.jpg",
+     "pageCount": 20
+   }
+   ```
+
+3. **Rebuild and deploy:**
+   ```bash
+   npm run build
+   vercel
+   ```
+
+## Configuration
+
+The site is configured for static export in `next.config.ts`:
+
+```typescript
+{
+  output: 'export',
+  images: {
+    unoptimized: true,
+  }
+}
+```
+
+This allows deployment to any static hosting service (Vercel, Netlify, GitHub Pages, etc.).
+
+## Notes
+
+- Images should be named `page-1.jpg`, `page-2.jpg`, etc.
+- Recommended image quality: 85-90% JPEG
+- Recommended resolution: 150-200 DPI for PDF conversion
+- The flipbook component supports keyboard navigation (arrow keys)
+- Mobile users can swipe/scroll through pages
+
+## License
+
+MIT
