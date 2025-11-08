@@ -31,7 +31,7 @@ export default function FlipBook({
 
   const pages = Array.from(
     { length: pageCount },
-    (_, i) => `/books/${bookSlug}/page-${i + 1}.jpg`
+    (_, i) => `/books/${bookSlug}/page-${i + 1}.webp`
   );
 
   // Haptic feedback function
@@ -222,7 +222,7 @@ export default function FlipBook({
           startZIndex={0}
           autoSize={true}
           maxShadowOpacity={0.5}
-          showPageCorners={true}
+          showPageCorners={false}
           disableFlipByClick={false}
           clickEventForward={false}
           useMouseEvents={true}
