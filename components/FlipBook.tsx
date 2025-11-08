@@ -27,22 +27,43 @@ export default function FlipBook({
   const [currentPage, setCurrentPage] = useState(0);
   const [showControls, setShowControls] = useState(true);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   const pages = Array.from(
     { length: pageCount },
     (_, i) => `/books/${bookSlug}/page-${i + 1}.jpg`
   );
 
+  // Haptic feedback function
+  const triggerHaptic = () => {
+    if ("vibrate" in navigator) {
+      // Short vibration for button clicks (10ms)
+      navigator.vibrate(10);
+    }
+  };
+
   // Fullscreen functions
   const toggleFullscreen = () => {
-    if (!document.fullscreenElement && containerRef.current) {
-      containerRef.current
-        .requestFullscreen()
+    if (!containerRef.current) return;
+
+    const element = containerRef.current;
+
+    // Check for various fullscreen APIs (standard, webkit, ms)
+    const requestFullscreen =
+      element.requestFullscreen ||
+      (element as any).webkitRequestFullscreen ||
+      (element as any).webkitEnterFullscreen ||
+      (element as any).msRequestFullscreen;
+
+    if (!document.fullscreenElement && requestFullscreen) {
+      requestFullscreen
+        .call(element)
         .then(() => {
           setIsFullscreen(true);
         })
         .catch((err) => {
-          console.error("Error attempting to enable fullscreen:", err);
+          // iOS doesn't support fullscreen API - silently fail
+          console.log("Fullscreen not supported on this device");
         });
     } else {
       exitFullscreen();
@@ -50,10 +71,17 @@ export default function FlipBook({
   };
 
   const exitFullscreen = () => {
-    if (document.fullscreenElement) {
-      document.exitFullscreen().then(() => {
+    const exitFullscreen =
+      document.exitFullscreen ||
+      (document as any).webkitExitFullscreen ||
+      (document as any).msExitFullscreen;
+
+    if (document.fullscreenElement && exitFullscreen) {
+      exitFullscreen.call(document).then(() => {
         setIsFullscreen(false);
       });
+    } else {
+      setIsFullscreen(false);
     }
   };
 
@@ -85,8 +113,27 @@ export default function FlipBook({
     return () => window.removeEventListener("keydown", handleKeyPress);
   }, [currentPage, pageCount, isFullscreen]);
 
-  // Mouse movement detection
+  // Mobile detection
   useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(
+        window.innerWidth < 768 ||
+          /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
+      );
+    };
+
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  // Mouse movement detection (desktop only)
+  useEffect(() => {
+    if (isMobile) {
+      setShowControls(true); // Always show on mobile
+      return;
+    }
+
     let timer: NodeJS.Timeout;
 
     const handleMouseMove = () => {
@@ -108,17 +155,33 @@ export default function FlipBook({
         clearTimeout(timer);
       }
     };
-  }, []);
+  }, [isMobile]);
 
   // Handle fullscreen change
   useEffect(() => {
     const handleFullscreenChange = () => {
-      setIsFullscreen(!!document.fullscreenElement);
+      const isFullscreen =
+        !!document.fullscreenElement ||
+        !!(document as any).webkitFullscreenElement ||
+        !!(document as any).msFullscreenElement;
+      setIsFullscreen(isFullscreen);
     };
 
     document.addEventListener("fullscreenchange", handleFullscreenChange);
-    return () =>
+    document.addEventListener("webkitfullscreenchange", handleFullscreenChange);
+    document.addEventListener("msfullscreenchange", handleFullscreenChange);
+
+    return () => {
       document.removeEventListener("fullscreenchange", handleFullscreenChange);
+      document.removeEventListener(
+        "webkitfullscreenchange",
+        handleFullscreenChange
+      );
+      document.removeEventListener(
+        "msfullscreenchange",
+        handleFullscreenChange
+      );
+    };
   }, []);
 
   // Disable scrollbar
@@ -185,62 +248,78 @@ export default function FlipBook({
         {/* Overlay Controls */}
         <div
           className={`absolute inset-0 pointer-events-none transition-opacity duration-300 ${
-            showControls ? "opacity-100" : "opacity-0"
+            showControls || isMobile ? "opacity-100" : "opacity-0"
           }`}
         >
-          {/* Previous Button */}
+          {/* Previous Button - Center Left (Always visible) */}
           <button
-            onClick={() => bookRef.current?.pageFlip().flipPrev()}
+            onClick={() => {
+              triggerHaptic();
+              bookRef.current?.pageFlip().flipPrev();
+            }}
             disabled={currentPage === 0}
-            className="absolute left-4 top-1/2 -translate-y-1/2 p-3 bg-black/60 text-white rounded-lg disabled:opacity-30 hover:bg-black/80 transition-all pointer-events-auto backdrop-blur-sm flex items-center justify-center"
+            className="absolute left-4 top-1/2 -translate-y-1/2 p-3 bg-black/40 text-white rounded-full border border-neutral-500/40 disabled:opacity-30 hover:bg-black/60 active:bg-black/70 transition-all pointer-events-auto backdrop-blur-sm flex items-center justify-center"
             style={{ zIndex: 1000 }}
             aria-label="Previous page"
           >
             <ChevronLeft size={24} />
           </button>
 
-          {/* Next Button */}
+          {/* Next Button - Center Right (Always visible) */}
           <button
-            onClick={() => bookRef.current?.pageFlip().flipNext()}
+            onClick={() => {
+              triggerHaptic();
+              bookRef.current?.pageFlip().flipNext();
+            }}
             disabled={currentPage === pageCount - 1}
-            className="absolute right-4 top-1/2 -translate-y-1/2 p-3 bg-black/60 text-white rounded-lg disabled:opacity-30 hover:bg-black/80 transition-all pointer-events-auto backdrop-blur-sm flex items-center justify-center"
+            className="absolute right-4 top-1/2 -translate-y-1/2 p-3 bg-black/40 text-white rounded-full border border-neutral-500/40 disabled:opacity-30 hover:bg-black/60 active:bg-black/70 transition-all pointer-events-auto backdrop-blur-sm flex items-center justify-center"
             style={{ zIndex: 1000 }}
             aria-label="Next page"
           >
             <ChevronRight size={24} />
           </button>
 
-          {/* Page Number */}
+          {/* Page Number - Top Left on Mobile, Bottom Center on Desktop */}
           <div
-            className="absolute bottom-4 left-1/2 -translate-x-1/2 px-4 py-2 bg-black/60 text-white rounded-lg pointer-events-auto backdrop-blur-sm"
+            className={`absolute px-4 py-2 bg-black/40 text-white rounded-lg pointer-events-auto backdrop-blur-sm ${
+              isMobile ? "top-4 left-4" : "bottom-8 left-1/2 -translate-x-1/2"
+            }`}
             style={{ zIndex: 1000 }}
           >
             Page {currentPage + 1} / {pageCount}
           </div>
+        </div>
 
-          {/* Top Right Buttons */}
-          <div
-            className="absolute top-4 right-4 flex gap-2 pointer-events-auto"
-            style={{ zIndex: 1000 }}
+        {/* Top Right Buttons */}
+        <div
+          className={`absolute top-4 right-4 flex gap-2 pointer-events-auto transition-opacity duration-300 ${
+            showControls || isMobile ? "opacity-100" : "opacity-0"
+          }`}
+          style={{ zIndex: 1000 }}
+        >
+          {/* Download PDF Button */}
+          <button
+            onClick={() => {
+              triggerHaptic();
+              downloadPDF();
+            }}
+            className="p-3 bg-black/60 text-white rounded-full border border-neutral-500/40 hover:bg-black/80 transition-all backdrop-blur-sm flex items-center justify-center"
+            aria-label="Download PDF"
           >
-            {/* Download PDF Button */}
-            <button
-              onClick={downloadPDF}
-              className="p-3 bg-black/60 text-white rounded-lg hover:bg-black/80 transition-all backdrop-blur-sm flex items-center justify-center"
-              aria-label="Download PDF"
-            >
-              <Download size={20} />
-            </button>
+            <Download size={20} />
+          </button>
 
-            {/* Fullscreen Button */}
-            <button
-              onClick={toggleFullscreen}
-              className="p-3 bg-black/60 text-white rounded-lg hover:bg-black/80 transition-all backdrop-blur-sm flex items-center justify-center"
-              aria-label={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
-            >
-              {isFullscreen ? <Minimize2 size={20} /> : <Maximize2 size={20} />}
-            </button>
-          </div>
+          {/* Fullscreen Button */}
+          <button
+            onClick={() => {
+              triggerHaptic();
+              toggleFullscreen();
+            }}
+            className="p-3 bg-black/60 text-white rounded-full border border-neutral-500/40 hover:bg-black/80 transition-all backdrop-blur-sm flex items-center justify-center"
+            aria-label={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
+          >
+            {isFullscreen ? <Minimize2 size={20} /> : <Maximize2 size={20} />}
+          </button>
         </div>
       </div>
     </div>
