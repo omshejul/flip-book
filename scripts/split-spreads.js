@@ -68,22 +68,29 @@ function splitSpreads(inputDir) {
     
     // If width is roughly 2x height (or wider), it's likely a spread
     // Portrait single page: ~0.75 aspect ratio
-    // Landscape spread: ~1.5+ aspect ratio
-    if (aspectRatio > 1.2) {
+    // Landscape spread: ~1.4+ aspect ratio (two landscape pages side by side)
+    // Landscape single page: ~1.2-1.4 aspect ratio
+    // Check if width is significantly wider than a single landscape page
+    if (aspectRatio > 1.35) {
       console.log(`Splitting spread: ${file} (${width}x${height}, ratio: ${aspectRatio.toFixed(2)})`);
       
-      // Split into left and right pages
+      // Split into left and right pages (each becomes a landscape page)
       const leftPage = path.join(inputDir, `page-${newPageNum}.${ext}`);
       const rightPage = path.join(inputDir, `page-${newPageNum + 1}.${ext}`);
       
-      // Extract left half
+      // Extract left half (left landscape page) - crop from left
+      const halfWidth = Math.floor(width / 2);
+      const rightStart = halfWidth;
+      
+      // Left half: from 0 to halfWidth
       execSync(
-        `${convertCmd} "${inputPath}" -crop 50%x100%+0+0 "${leftPage}"`
+        `${convertCmd} "${inputPath}" -crop ${halfWidth}x${height}+0+0 +repage "${leftPage}"`
       );
       
-      // Extract right half
+      // Right half: from halfWidth to end (use remaining width to handle odd widths)
+      const rightWidth = width - halfWidth;
       execSync(
-        `${convertCmd} "${inputPath}" -crop 50%x100%+50%+0 "${rightPage}"`
+        `${convertCmd} "${inputPath}" -crop ${rightWidth}x${height}+${rightStart}+0 +repage "${rightPage}"`
       );
       
       newPageNum += 2;

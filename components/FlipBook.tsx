@@ -28,6 +28,7 @@ export default function FlipBook({
   const [showControls, setShowControls] = useState(true);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [windowSize, setWindowSize] = useState({ width: 1000, height: 800 });
 
   const pages = Array.from(
     { length: pageCount },
@@ -87,8 +88,8 @@ export default function FlipBook({
 
   const downloadPDF = () => {
     const link = document.createElement("a");
-    link.href = `/books/${bookSlug}/book.pdf`;
-    link.download = `${bookSlug}.pdf`;
+    link.href = `/books/${bookSlug}/Haridwar Book final.pdf`;
+    link.download = `Haridwar Book final.pdf`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -113,13 +114,17 @@ export default function FlipBook({
     return () => window.removeEventListener("keydown", handleKeyPress);
   }, [currentPage, pageCount, isFullscreen]);
 
-  // Mobile detection
+  // Mobile detection and window size tracking
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(
         window.innerWidth < 768 ||
           /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
       );
+      setWindowSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
     };
 
     checkMobile();
@@ -207,14 +212,14 @@ export default function FlipBook({
           height={733}
           size="stretch"
           minWidth={315}
-          maxWidth={1000}
+          maxWidth={windowSize.width - 40}
           minHeight={420}
-          maxHeight={1350}
+          maxHeight={windowSize.height - 40}
           showCover={false}
           mobileScrollSupport={true}
           onFlip={(e) => setCurrentPage(e.data)}
           className="shadow-2xl"
-          style={{}}
+          style={{ width: "100%", height: "100%" }}
           startPage={0}
           drawShadow={true}
           flippingTime={500}
