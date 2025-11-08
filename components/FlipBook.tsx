@@ -3,7 +3,13 @@
 import { useRef, useState, useEffect } from "react";
 import HTMLFlipBook from "react-pageflip";
 import Image from "next/image";
-import { ArrowLeft, ArrowRight, Download, ArrowsOut, ArrowsIn } from "@phosphor-icons/react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Download,
+  Maximize2,
+  Minimize2,
+} from "react-feather";
 
 interface FlipBookProps {
   bookSlug: string;
@@ -141,7 +147,7 @@ export default function FlipBook({
           maxWidth={1000}
           minHeight={420}
           maxHeight={1350}
-          showCover={true}
+          showCover={false}
           mobileScrollSupport={true}
           onFlip={(e) => setCurrentPage(e.data)}
           className="shadow-2xl"
@@ -190,7 +196,7 @@ export default function FlipBook({
             style={{ zIndex: 1000 }}
             aria-label="Previous page"
           >
-            <ArrowLeft size={24} weight="bold" />
+            <ChevronLeft size={24} />
           </button>
 
           {/* Next Button */}
@@ -201,7 +207,7 @@ export default function FlipBook({
             style={{ zIndex: 1000 }}
             aria-label="Next page"
           >
-            <ArrowRight size={24} weight="bold" />
+            <ChevronRight size={24} />
           </button>
 
           {/* Page Number */}
@@ -223,7 +229,7 @@ export default function FlipBook({
               className="p-3 bg-black/60 text-white rounded-lg hover:bg-black/80 transition-all backdrop-blur-sm flex items-center justify-center"
               aria-label="Download PDF"
             >
-              <Download size={20} weight="bold" />
+              <Download size={20} />
             </button>
 
             {/* Fullscreen Button */}
@@ -232,11 +238,7 @@ export default function FlipBook({
               className="p-3 bg-black/60 text-white rounded-lg hover:bg-black/80 transition-all backdrop-blur-sm flex items-center justify-center"
               aria-label={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
             >
-              {isFullscreen ? (
-                <ArrowsIn size={20} weight="bold" />
-              ) : (
-                <ArrowsOut size={20} weight="bold" />
-              )}
+              {isFullscreen ? <Minimize2 size={20} /> : <Maximize2 size={20} />}
             </button>
           </div>
         </div>
