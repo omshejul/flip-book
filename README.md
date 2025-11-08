@@ -104,12 +104,14 @@ flip-book/
 ## Adding a New Book
 
 1. **Convert PDF to images:**
+
    ```bash
    mkdir -p public/books/my-new-book
    convert -density 150 my-book.pdf -quality 90 public/books/my-new-book/page-%d.jpg
    ```
 
 2. **Add to `data/books.json`:**
+
    ```json
    {
      "slug": "my-new-book",

@@ -3,6 +3,7 @@
 import { useRef, useState, useEffect } from "react";
 import HTMLFlipBook from "react-pageflip";
 import Image from "next/image";
+import { ArrowLeft, ArrowRight, Download, ArrowsOut, ArrowsIn } from "@phosphor-icons/react";
 
 interface FlipBookProps {
   bookSlug: string;
@@ -185,20 +186,22 @@ export default function FlipBook({
           <button
             onClick={() => bookRef.current?.pageFlip().flipPrev()}
             disabled={currentPage === 0}
-            className="absolute left-4 top-1/2 -translate-y-1/2 px-4 py-2 bg-black/60 text-white rounded-lg disabled:opacity-30 hover:bg-black/80 transition-all pointer-events-auto backdrop-blur-sm"
+            className="absolute left-4 top-1/2 -translate-y-1/2 p-3 bg-black/60 text-white rounded-lg disabled:opacity-30 hover:bg-black/80 transition-all pointer-events-auto backdrop-blur-sm flex items-center justify-center"
             style={{ zIndex: 1000 }}
+            aria-label="Previous page"
           >
-            ← Previous
+            <ArrowLeft size={24} weight="bold" />
           </button>
 
           {/* Next Button */}
           <button
             onClick={() => bookRef.current?.pageFlip().flipNext()}
             disabled={currentPage === pageCount - 1}
-            className="absolute right-4 top-1/2 -translate-y-1/2 px-4 py-2 bg-black/60 text-white rounded-lg disabled:opacity-30 hover:bg-black/80 transition-all pointer-events-auto backdrop-blur-sm"
+            className="absolute right-4 top-1/2 -translate-y-1/2 p-3 bg-black/60 text-white rounded-lg disabled:opacity-30 hover:bg-black/80 transition-all pointer-events-auto backdrop-blur-sm flex items-center justify-center"
             style={{ zIndex: 1000 }}
+            aria-label="Next page"
           >
-            Next →
+            <ArrowRight size={24} weight="bold" />
           </button>
 
           {/* Page Number */}
@@ -217,17 +220,23 @@ export default function FlipBook({
             {/* Download PDF Button */}
             <button
               onClick={downloadPDF}
-              className="px-4 py-2 bg-black/60 text-white rounded-lg hover:bg-black/80 transition-all backdrop-blur-sm"
+              className="p-3 bg-black/60 text-white rounded-lg hover:bg-black/80 transition-all backdrop-blur-sm flex items-center justify-center"
+              aria-label="Download PDF"
             >
-              ⬇ Download PDF
+              <Download size={20} weight="bold" />
             </button>
 
             {/* Fullscreen Button */}
             <button
               onClick={toggleFullscreen}
-              className="px-4 py-2 bg-black/60 text-white rounded-lg hover:bg-black/80 transition-all backdrop-blur-sm"
+              className="p-3 bg-black/60 text-white rounded-lg hover:bg-black/80 transition-all backdrop-blur-sm flex items-center justify-center"
+              aria-label={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
             >
-              {isFullscreen ? "⤓ Exit" : "⛶ Fullscreen"}
+              {isFullscreen ? (
+                <ArrowsIn size={20} weight="bold" />
+              ) : (
+                <ArrowsOut size={20} weight="bold" />
+              )}
             </button>
           </div>
         </div>
