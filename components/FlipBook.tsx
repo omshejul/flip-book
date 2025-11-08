@@ -154,7 +154,7 @@ export default function FlipBook({
           style={{}}
           startPage={0}
           drawShadow={true}
-          flippingTime={1000}
+          flippingTime={400}
           usePortrait={true}
           startZIndex={0}
           autoSize={true}
