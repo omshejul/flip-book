@@ -10,6 +10,14 @@ import {
   Maximize2,
   Minimize2,
 } from "react-feather";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 interface FlipBookProps {
   bookSlug: string;
@@ -30,6 +38,9 @@ export default function FlipBook({
   const [isMobile, setIsMobile] = useState(false);
   const [isIOS, setIsIOS] = useState(false);
   const [windowSize, setWindowSize] = useState({ width: 1000, height: 800 });
+  const [showDownloadDialog, setShowDownloadDialog] = useState(false);
+  const [pdfSize, setPdfSize] = useState<string>("");
+  const [isLoadingSize, setIsLoadingSize] = useState(false);
 
   const pages = Array.from(
     { length: pageCount },
@@ -128,13 +139,49 @@ export default function FlipBook({
     }
   };
 
-  const downloadPDF = () => {
+  // Format file size helper
+  const formatFileSize = (bytes: number): string => {
+    if (bytes === 0) return "0 Bytes";
+    const k = 1024;
+    const sizes = ["Bytes", "KB", "MB", "GB"];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + " " + sizes[i];
+  };
+
+  // Fetch PDF size and show dialog
+  const handleDownloadClick = async () => {
+    const pdfUrl = `/books/${bookSlug}/Haridwar Book final.pdf`;
+    setIsLoadingSize(true);
+
+    try {
+      const response = await fetch(pdfUrl, { method: "HEAD" });
+      const contentLength = response.headers.get("content-length");
+
+      if (contentLength) {
+        const sizeInBytes = parseInt(contentLength, 10);
+        setPdfSize(formatFileSize(sizeInBytes));
+      } else {
+        setPdfSize("Unknown size");
+      }
+      setShowDownloadDialog(true);
+    } catch (error) {
+      console.error("Error fetching PDF size:", error);
+      setPdfSize("Unknown size");
+      setShowDownloadDialog(true);
+    } finally {
+      setIsLoadingSize(false);
+    }
+  };
+
+  // Confirm and download PDF
+  const confirmDownload = () => {
     const link = document.createElement("a");
     link.href = `/books/${bookSlug}/Haridwar Book final.pdf`;
     link.download = `Haridwar Book final.pdf`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    setShowDownloadDialog(false);
   };
 
   // Keyboard navigation
@@ -371,9 +418,10 @@ export default function FlipBook({
           <button
             onClick={() => {
               triggerHaptic();
-              downloadPDF();
+              handleDownloadClick();
             }}
-            className="p-3 bg-black/60 text-white rounded-full border border-neutral-500/40 hover:bg-black/80 transition-all backdrop-blur-sm flex items-center justify-center"
+            disabled={isLoadingSize}
+            className="p-3 bg-black/60 text-white rounded-full border border-neutral-500/40 hover:bg-black/80 transition-all backdrop-blur-sm flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
             aria-label="Download PDF"
           >
             <Download size={20} />
@@ -392,6 +440,41 @@ export default function FlipBook({
           </button>
         </div>
       </div>
+
+      {/* Download Confirmation Dialog */}
+      <Dialog open={showDownloadDialog} onOpenChange={setShowDownloadDialog}>
+        <DialogContent className="bg-white text-black border border-neutral-200">
+          <DialogHeader>
+            <DialogTitle>Confirm Download</DialogTitle>
+            <DialogDescription>
+              Do you want to download this PDF?
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-4">
+            <p className="text-sm text-neutral-600">
+              File size:{" "}
+              <span className="font-semibold text-neutral-900">{pdfSize}</span>
+            </p>
+          </div>
+          <DialogFooter className="flex-row gap-2 sm:gap-0">
+            <button
+              onClick={() => setShowDownloadDialog(false)}
+              className="px-4 py-2 text-sm font-medium text-neutral-700 bg-neutral-100 rounded-md hover:bg-neutral-200 transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={() => {
+                triggerHaptic();
+                confirmDownload();
+              }}
+              className="px-4 py-2 text-sm font-medium text-white bg-black rounded-md hover:bg-neutral-800 transition-colors"
+            >
+              Download
+            </button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
