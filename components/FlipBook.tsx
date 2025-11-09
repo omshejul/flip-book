@@ -28,6 +28,7 @@ export default function FlipBook({
   const [showControls, setShowControls] = useState(true);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [isIOS, setIsIOS] = useState(false);
   const [windowSize, setWindowSize] = useState({ width: 1000, height: 800 });
 
   const pages = Array.from(
@@ -47,6 +48,36 @@ export default function FlipBook({
   const toggleFullscreen = () => {
     if (!containerRef.current) return;
 
+    // iOS doesn't support Fullscreen API, use CSS-based approach
+    if (isIOS) {
+      const newFullscreenState = !isFullscreen;
+      setIsFullscreen(newFullscreenState);
+
+      // Toggle fullscreen class on body/html for iOS
+      if (newFullscreenState) {
+        document.documentElement.classList.add("ios-fullscreen");
+        document.body.classList.add("ios-fullscreen");
+        document.documentElement.style.height = "100%";
+        document.body.style.height = "100%";
+        document.documentElement.style.overflow = "hidden";
+        document.body.style.overflow = "hidden";
+        // Hide address bar by scrolling to top
+        window.scrollTo(0, 0);
+        // Force viewport update
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+        }, 100);
+      } else {
+        document.documentElement.classList.remove("ios-fullscreen");
+        document.body.classList.remove("ios-fullscreen");
+        document.documentElement.style.height = "";
+        document.body.style.height = "";
+        document.documentElement.style.overflow = "";
+        document.body.style.overflow = "";
+      }
+      return;
+    }
+
     const element = containerRef.current;
 
     // Check for various fullscreen APIs (standard, webkit, ms)
@@ -63,7 +94,6 @@ export default function FlipBook({
           setIsFullscreen(true);
         })
         .catch((err) => {
-          // iOS doesn't support fullscreen API - silently fail
           console.log("Fullscreen not supported on this device");
         });
     } else {
@@ -72,6 +102,18 @@ export default function FlipBook({
   };
 
   const exitFullscreen = () => {
+    // iOS doesn't support Fullscreen API
+    if (isIOS) {
+      setIsFullscreen(false);
+      document.documentElement.classList.remove("ios-fullscreen");
+      document.body.classList.remove("ios-fullscreen");
+      document.documentElement.style.height = "";
+      document.body.style.height = "";
+      document.documentElement.style.overflow = "";
+      document.body.style.overflow = "";
+      return;
+    }
+
     const exitFullscreen =
       document.exitFullscreen ||
       (document as any).webkitExitFullscreen ||
@@ -117,9 +159,11 @@ export default function FlipBook({
   // Mobile detection and window size tracking
   useEffect(() => {
     const checkMobile = () => {
+      const userAgent = navigator.userAgent;
+      const isIOSDevice = /iPhone|iPad|iPod/i.test(userAgent);
+      setIsIOS(isIOSDevice);
       setIsMobile(
-        window.innerWidth < 768 ||
-          /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
+        window.innerWidth < 768 || isIOSDevice || /Android/i.test(userAgent)
       );
       setWindowSize({
         width: window.innerWidth,
@@ -162,8 +206,10 @@ export default function FlipBook({
     };
   }, [isMobile]);
 
-  // Handle fullscreen change
+  // Handle fullscreen change (non-iOS only)
   useEffect(() => {
+    if (isIOS) return; // iOS doesn't support fullscreen API
+
     const handleFullscreenChange = () => {
       const isFullscreen =
         !!document.fullscreenElement ||
@@ -187,7 +233,7 @@ export default function FlipBook({
         handleFullscreenChange
       );
     };
-  }, []);
+  }, [isIOS]);
 
   // Disable scrollbar
   useEffect(() => {
@@ -196,14 +242,33 @@ export default function FlipBook({
     return () => {
       document.documentElement.style.overflow = "";
       document.body.style.overflow = "";
+      // Cleanup iOS fullscreen classes
+      document.documentElement.classList.remove("ios-fullscreen");
+      document.body.classList.remove("ios-fullscreen");
     };
   }, []);
 
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 flex items-center justify-center w-screen h-screen overflow-hidden"
-      style={{ backgroundColor: "transparent" }}
+      className={`fixed inset-0 flex items-center justify-center w-screen h-screen overflow-hidden ${
+        isFullscreen && isIOS ? "ios-fullscreen" : ""
+      }`}
+      style={{
+        backgroundColor: "transparent",
+        ...(isFullscreen && isIOS
+          ? {
+              position: "fixed",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              width: "100vw",
+              height: "100vh",
+              zIndex: 9999,
+            }
+          : {}),
+      }}
     >
       <div className="relative w-full h-full flex items-center justify-center">
         <HTMLFlipBook
