@@ -155,11 +155,11 @@ export default function FlipBook({
 
     try {
       const response = await fetch(pdfUrl, { method: "HEAD" });
-      
+
       if (!response.ok) {
         throw new Error(`Failed to fetch PDF: ${response.status}`);
       }
-      
+
       const contentLength = response.headers.get("content-length");
 
       if (contentLength) {
@@ -343,7 +343,7 @@ export default function FlipBook({
           startPage={0}
           drawShadow={true}
           flippingTime={500}
-          usePortrait={false}
+          usePortrait={isMobile}
           startZIndex={0}
           autoSize={true}
           maxShadowOpacity={0.5}
