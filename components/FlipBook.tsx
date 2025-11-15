@@ -328,8 +328,8 @@ export default function FlipBook({
       <div className="relative w-full h-full flex items-center justify-center">
         <HTMLFlipBook
           ref={bookRef}
-          width={550}
-          height={733}
+          width={733}
+          height={550}
           size="stretch"
           minWidth={315}
           maxWidth={windowSize.width - 40}
@@ -343,7 +343,7 @@ export default function FlipBook({
           startPage={0}
           drawShadow={true}
           flippingTime={500}
-          usePortrait={true}
+          usePortrait={false}
           startZIndex={0}
           autoSize={true}
           maxShadowOpacity={0.5}
