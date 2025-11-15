@@ -2,7 +2,8 @@
 
 A simple, static-only flipbook viewer built with Next.js. Perfect for personal use - no backend required!
 
-> 📖 **For detailed build instructions and architecture documentation, see [BUILD_GUIDE.md](./BUILD_GUIDE.md)**
+> 📖 **For detailed build instructions and architecture documentation, see [BUILD_GUIDE.md](./BUILD_GUIDE.md)**  
+> 📚 **For step-by-step instructions on adding or modifying books, see [BOOK_GUIDE.md](./BOOK_GUIDE.md)**
 
 ## Features
 
@@ -83,8 +84,8 @@ netlify deploy --prod
 ```
 flip-book/
 ├── app/
-│   ├── page.tsx              # Home page (book list)
-│   └── book/[slug]/page.tsx  # Book viewer
+│   ├── page.tsx              # Home page
+│   └── [slug]/page.tsx       # Book viewer
 ├── components/
 │   └── FlipBook.tsx          # Flipbook component
 ├── data/
@@ -103,20 +104,24 @@ flip-book/
 
 ## Adding a New Book
 
-1. **Convert PDF to images:**
+For detailed step-by-step instructions, see **[BOOK_GUIDE.md](./BOOK_GUIDE.md)**.
 
+**Quick start:**
+
+1. **Convert PDF to images:**
    ```bash
    mkdir -p public/books/my-new-book
-   convert -density 150 my-book.pdf -quality 90 public/books/my-new-book/page-%d.jpg
+   cp my-book.pdf public/books/my-new-book/book.pdf
+   cd public/books/my-new-book
+   magick -density 300 "book.pdf" -quality 90 "page-%d.webp"
    ```
 
 2. **Add to `data/books.json`:**
-
    ```json
    {
      "slug": "my-new-book",
      "title": "My New Book",
-     "cover": "/books/my-new-book/page-1.jpg",
+     "cover": "/books/my-new-book/page-1.webp",
      "pageCount": 20
    }
    ```

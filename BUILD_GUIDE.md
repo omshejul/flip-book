@@ -236,7 +236,7 @@ The `FlipBook` component:
 
 Next.js generates static HTML for:
 - Homepage (`/`) - renders FlipBook directly
-- Book routes (`/book/[slug]`) - optional dynamic routes
+- Book routes (`/[slug]`) - dynamic routes for each book
 
 ### 6. Build Output
 
