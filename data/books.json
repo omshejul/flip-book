@@ -4,5 +4,11 @@
     "title": "My Magazine Issue 1",
     "cover": "/books/my-magazine/page-1.webp",
     "pageCount": 88
+  },
+  {
+    "slug": "documentation-trophy",
+    "title": "Documentation Trophy",
+    "cover": "/books/documentation-trophy/page-1.webp",
+    "pageCount": 10
   }
 ]

@@ -150,18 +150,26 @@ export default function FlipBook({
 
   // Fetch PDF size and show dialog
   const handleDownloadClick = async () => {
-    const pdfUrl = `/books/${bookSlug}/Haridwar Book final.pdf`;
+    const pdfUrl = `/books/${bookSlug}/book.pdf`;
     setIsLoadingSize(true);
 
     try {
       const response = await fetch(pdfUrl, { method: "HEAD" });
+      
+      if (!response.ok) {
+        throw new Error(`Failed to fetch PDF: ${response.status}`);
+      }
+      
       const contentLength = response.headers.get("content-length");
 
       if (contentLength) {
         const sizeInBytes = parseInt(contentLength, 10);
         setPdfSize(formatFileSize(sizeInBytes));
       } else {
-        setPdfSize("Unknown size");
+        // If content-length is not available, try fetching the file to get size
+        const fullResponse = await fetch(pdfUrl);
+        const blob = await fullResponse.blob();
+        setPdfSize(formatFileSize(blob.size));
       }
       setShowDownloadDialog(true);
     } catch (error) {
@@ -176,8 +184,8 @@ export default function FlipBook({
   // Confirm and download PDF
   const confirmDownload = () => {
     const link = document.createElement("a");
-    link.href = `/books/${bookSlug}/Haridwar Book final.pdf`;
-    link.download = `Haridwar Book final.pdf`;
+    link.href = `/books/${bookSlug}/book.pdf`;
+    link.download = `book.pdf`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
