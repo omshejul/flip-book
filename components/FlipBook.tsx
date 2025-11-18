@@ -19,16 +19,20 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 
+export type BookOrientation = "portrait" | "landscape";
+
 interface FlipBookProps {
   bookSlug: string;
   pageCount: number;
   title: string;
+  orientation?: BookOrientation;
 }
 
 export default function FlipBook({
   bookSlug,
   pageCount,
   title,
+  orientation = "landscape",
 }: FlipBookProps) {
   const bookRef = useRef<any>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -38,6 +42,11 @@ export default function FlipBook({
   const [isMobile, setIsMobile] = useState(false);
   const [isIOS, setIsIOS] = useState(false);
   const [windowSize, setWindowSize] = useState({ width: 1000, height: 800 });
+  const isPortraitBook = orientation === "portrait";
+  const baseWidth = isPortraitBook ? 550 : 733;
+  const baseHeight = isPortraitBook ? 733 : 550;
+  const usePortraitMode = isPortraitBook || isMobile;
+
   const [showDownloadDialog, setShowDownloadDialog] = useState(false);
   const [pdfSize, setPdfSize] = useState<string>("");
   const [isLoadingSize, setIsLoadingSize] = useState(false);
@@ -338,12 +347,12 @@ export default function FlipBook({
       <div className="relative w-full h-full flex items-center justify-center">
         <HTMLFlipBook
           ref={bookRef}
-          width={733}
-          height={550}
+          width={baseWidth}
+          height={baseHeight}
           size="stretch"
-          minWidth={315}
+          minWidth={isPortraitBook ? 300 : 315}
           maxWidth={windowSize.width - 40}
-          minHeight={420}
+          minHeight={isPortraitBook ? 500 : 420}
           maxHeight={windowSize.height - 40}
           showCover={false}
           mobileScrollSupport={true}
@@ -353,7 +362,7 @@ export default function FlipBook({
           startPage={0}
           drawShadow={true}
           flippingTime={500}
-          usePortrait={isMobile}
+          usePortrait={usePortraitMode}
           startZIndex={0}
           autoSize={true}
           maxShadowOpacity={0.5}

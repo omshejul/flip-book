@@ -1,4 +1,4 @@
-import FlipBook from "@/components/FlipBook";
+import FlipBook, { BookOrientation } from "@/components/FlipBook";
 import books from "@/data/books.json";
 import { notFound } from "next/navigation";
 
@@ -20,11 +20,14 @@ export default async function BookPage({
     notFound();
   }
 
+  const orientation = book.orientation as BookOrientation | undefined;
+
   return (
     <FlipBook
       bookSlug={book.slug}
       pageCount={book.pageCount}
       title={book.title}
+      orientation={orientation}
     />
   );
 }

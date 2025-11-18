@@ -1,4 +1,4 @@
-import FlipBook from "@/components/FlipBook";
+import FlipBook, { BookOrientation } from "@/components/FlipBook";
 import books from "@/data/books.json";
 
 export default function Home() {
@@ -8,11 +8,14 @@ export default function Home() {
     return null;
   }
 
+  const orientation = book.orientation as BookOrientation | undefined;
+
   return (
     <FlipBook
       bookSlug={book.slug}
       pageCount={book.pageCount}
       title={book.title}
+      orientation={orientation}
     />
   );
 }

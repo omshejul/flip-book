@@ -16,13 +16,14 @@ This guide will walk you through adding new books or modifying existing ones in 
 Before you begin, make sure you have:
 
 1. **ImageMagick installed** (required for PDF conversion)
+
    ```bash
    # Mac
    brew install imagemagick
-   
+
    # Linux
    sudo apt install imagemagick
-   
+
    # Windows
    # Download from https://imagemagick.org/
    ```
@@ -49,6 +50,7 @@ mkdir -p public/books/your-book-slug
 ```
 
 **Important:** Use a URL-friendly slug (lowercase, hyphens, no spaces)
+
 - ✅ Good: `my-awesome-book`, `documentation-trophy`, `product-catalog-2024`
 - ❌ Bad: `My Awesome Book`, `book_1`, `book with spaces`
 
@@ -68,12 +70,24 @@ If your PDF has one page per PDF page (portrait orientation):
 
 ```bash
 cd public/books/your-book-slug
+# For vector graphics (recommended for crisp text and graphics):
+magick -density 350 -colorspace RGB -quality 95 -define webp:lossless=true -resize 4000x4000\> "book.pdf" "page-%d.webp"
+
+# OR for simpler conversion (faster but may look faded for vectors):
 magick -density 300 "book.pdf" -quality 90 "page-%d.webp"
 ```
 
 This creates `page-1.webp`, `page-2.webp`, etc.
 
+**Note:** For PDFs with vector graphics (text, logos, diagrams), use the first command with:
+
+- `-density 400` - Higher resolution for crisp vectors
+- `-colorspace RGB` - Preserves color accuracy
+- `-quality 95` - Higher quality to prevent fading
+- `-define webp:lossless=false` - Ensures proper compression
+
 **If pages start from 0:**
+
 ```bash
 # Rename pages to start from 1
 for i in {0..9}; do
@@ -143,6 +157,7 @@ Edit `data/books.json` and add your new book:
 ```
 
 **Fields explained:**
+
 - `slug`: URL-friendly identifier (must match directory name)
 - `title`: Display name for your book
 - `cover`: Path to the first page image (usually `page-1.webp`)
@@ -151,6 +166,7 @@ Edit `data/books.json` and add your new book:
 ### Step 7: Verify Your Book
 
 1. Start the development server:
+
    ```bash
    pnpm dev
    # or
@@ -158,6 +174,7 @@ Edit `data/books.json` and add your new book:
    ```
 
 2. Visit your book:
+
    - Direct route: `http://localhost:3000/your-book-slug`
    - Or navigate from the homepage
 
@@ -186,13 +203,14 @@ vercel
 ### Update Book Metadata
 
 Edit `data/books.json` to change:
+
 - Title
 - Cover image path
 - Page count
 
 ```json
 {
-  "slug": "existing-book-slug",  // Don't change this!
+  "slug": "existing-book-slug", // Don't change this!
   "title": "New Title",
   "cover": "/books/existing-book-slug/page-1.webp",
   "pageCount": 25
@@ -202,16 +220,19 @@ Edit `data/books.json` to change:
 ### Replace Pages
 
 1. **Backup existing pages** (optional but recommended):
+
    ```bash
    cp -r public/books/existing-book-slug public/books/existing-book-slug-backup
    ```
 
 2. **Remove old pages:**
+
    ```bash
    rm public/books/existing-book-slug/page-*.webp
    ```
 
 3. **Convert new PDF:**
+
    ```bash
    cd public/books/existing-book-slug
    magick -density 300 "book.pdf" -quality 90 "page-%d.webp"
@@ -227,11 +248,13 @@ Edit `data/books.json` to change:
 ### Add More Pages to Existing Book
 
 1. **Find the highest page number:**
+
    ```bash
    ls -1 public/books/existing-book-slug/page-*.webp | sort -V | tail -1
    ```
 
 2. **Convert additional pages from PDF:**
+
    ```bash
    cd public/books/existing-book-slug
    # Convert pages starting from page 11 (if you have 10 pages already)
@@ -239,6 +262,7 @@ Edit `data/books.json` to change:
    ```
 
 3. **Rename to continue numbering:**
+
    ```bash
    # Rename page-00.webp to page-11.webp, etc.
    for file in page-*.webp; do
@@ -271,31 +295,49 @@ The download button will automatically use the new PDF.
 
 ### Image Quality Settings
 
-**For WebP:**
+**For WebP (Vector Graphics - Recommended):**
+
+```bash
+magick -density 350 -colorspace RGB -quality 95 -define webp:lossless=true -resize 4000x4000\> "book.pdf" "page-%d.webp"
+```
+
+**For WebP (Photos/Scans):**
+
 ```bash
 magick -density 300 "book.pdf" -quality 90 "page-%d.webp"
 ```
 
 **For JPEG:**
+
 ```bash
 magick -density 300 "book.pdf" -quality 85 "page-%d.jpg"
 ```
 
 **Quality recommendations:**
-- `85-90`: High quality, good file size (recommended)
-- `90-95`: Very high quality, larger files
-- `75-85`: Lower quality, smaller files (for faster loading)
+
+- `85-90`: High quality, good file size (for photos/scans)
+- `90-95`: Very high quality, larger files (recommended for vector graphics)
+- `95-100`: Maximum quality, largest files (for critical vector content)
 
 **Density (DPI) recommendations:**
+
 - `150`: Standard quality, smaller files
 - `200`: Good quality, balanced
-- `300`: High quality, larger files (recommended for print-quality)
+- `300`: High quality (good for photos/scans)
+- `400-600`: Very high quality (recommended for vector graphics, text, logos)
+
+**Important for Vector Graphics:**
+
+- Use `-colorspace RGB` to preserve color accuracy
+- Use higher density (350–400) for crisp text and vector graphics
+- Use quality 95+ (and lossless WebP) to prevent fading of vector elements
 
 ## Troubleshooting
 
 ### Problem: Pages are numbered incorrectly
 
 **Solution:** Rename pages to start from 1:
+
 ```bash
 cd public/books/your-book-slug
 for i in {0..9}; do
@@ -308,6 +350,7 @@ done
 ### Problem: "Unknown size" in download dialog
 
 **Solution:** Make sure your PDF is named `book.pdf`:
+
 ```bash
 cd public/books/your-book-slug
 ls -la *.pdf  # Should show book.pdf
@@ -316,6 +359,7 @@ ls -la *.pdf  # Should show book.pdf
 ### Problem: Pages are split incorrectly (spreads)
 
 **Solution:** Use the split script:
+
 ```bash
 node scripts/split-all-pages.js public/books/your-book-slug
 ```
@@ -323,6 +367,7 @@ node scripts/split-all-pages.js public/books/your-book-slug
 ### Problem: Book doesn't appear after adding
 
 **Solutions:**
+
 1. Check `books.json` syntax (valid JSON)
 2. Verify slug matches directory name
 3. Ensure page files exist and are numbered correctly
@@ -332,6 +377,7 @@ node scripts/split-all-pages.js public/books/your-book-slug
 ### Problem: Images are too large/slow to load
 
 **Solutions:**
+
 1. Reduce quality: `-quality 85` instead of `90`
 2. Reduce density: `-density 200` instead of `300`
 3. Use WebP format instead of JPEG
@@ -339,6 +385,7 @@ node scripts/split-all-pages.js public/books/your-book-slug
 ### Problem: Download button doesn't work
 
 **Solutions:**
+
 1. Ensure PDF is named `book.pdf`
 2. Check file path: `/books/your-slug/book.pdf`
 3. Verify PDF file exists in the directory
@@ -393,6 +440,7 @@ Before deploying, verify:
 ### Version Control
 
 **Recommended .gitignore entries:**
+
 ```
 # Don't commit large image files
 public/books/*/page-*.webp
@@ -461,4 +509,3 @@ pnpm build
 ---
 
 **Last Updated:** 2024
-
