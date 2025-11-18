@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { FileText, Copy, Check } from "react-feather";
+import { FileText, Link as LinkIcon, Check } from "lucide-react";
 import Link from "next/link";
 
 interface Certificate {
@@ -185,7 +185,7 @@ export default function CertificatesPage() {
                     {copiedId === certificate.filename ? (
                       <Check size={18} className="text-green-600" />
                     ) : (
-                      <Copy size={18} />
+                      <LinkIcon size={18} />
                     )}
                   </button>
                 </div>
