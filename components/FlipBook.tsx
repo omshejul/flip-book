@@ -148,6 +148,16 @@ export default function FlipBook({
     return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + " " + sizes[i];
   };
 
+  // Format title to safe filename
+  const formatFilename = (title: string): string => {
+    // Replace spaces with underscores, remove special characters, keep alphanumeric and underscores
+    const safeTitle = title
+      .replace(/\s+/g, "_")
+      .replace(/[^a-zA-Z0-9_]/g, "")
+      .trim();
+    return `Shruti_${safeTitle}.pdf`;
+  };
+
   // Fetch PDF size and show dialog
   const handleDownloadClick = async () => {
     const pdfUrl = `/books/${bookSlug}/book.pdf`;
@@ -185,7 +195,7 @@ export default function FlipBook({
   const confirmDownload = () => {
     const link = document.createElement("a");
     link.href = `/books/${bookSlug}/book.pdf`;
-    link.download = `book.pdf`;
+    link.download = formatFilename(title);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
