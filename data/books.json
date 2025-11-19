@@ -1,9 +1,9 @@
 [
   {
     "slug": "my-magazine",
-    "title": "My Magazine Issue 1",
+    "title": "Portfolio",
     "cover": "/books/my-magazine/page-1.webp",
-    "pageCount": 88
+    "pageCount": 24
   },
   {
     "slug": "documentation-trophy",
