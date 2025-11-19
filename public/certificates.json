@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2025-11-18T17:29:09.793Z",
-  "count": 4,
+  "generatedAt": "2025-11-19T13:06:55.775Z",
+  "count": 5,
   "certificates": [
     {
       "filename": "An_Introduction_to_Urban_Ecological_Heritage_Theories_and_Applications.pdf",
@@ -25,6 +25,12 @@
       "name": "Vernacular_Architecture",
       "path": "/certificates/Vernacular_Architecture.pdf",
       "size": 1458878
+    },
+    {
+      "filename": "Vice_President of_Heritage_Club.pdf",
+      "name": "Vice_President of_Heritage_Club",
+      "path": "/certificates/Vice_President of_Heritage_Club.pdf",
+      "size": 300488
     }
   ]
 }
