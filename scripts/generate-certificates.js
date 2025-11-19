@@ -38,7 +38,7 @@ function generateThumbnail(pdfPath, thumbnailPath) {
   try {
     // Generate thumbnail: first page, 400px width, quality 85
     execSync(
-      `${magickCmd} -density 150 "${pdfPath}[0]" -resize 400x -quality 85 "${thumbnailPath}"`,
+      `${magickCmd} -density 250 "${pdfPath}[0]" -resize 800x -quality 95 "${thumbnailPath}"`,
       { stdio: 'ignore' }
     );
     return true;
