@@ -9,6 +9,7 @@ import {
   Download,
   Maximize2,
   Minimize2,
+  Eye,
 } from "react-feather";
 import {
   Dialog,
@@ -209,6 +210,12 @@ export default function FlipBook({
     link.click();
     document.body.removeChild(link);
     setShowDownloadDialog(false);
+  };
+
+  // View PDF in new tab
+  const handleViewPDF = () => {
+    triggerHaptic();
+    window.open(`/books/${bookSlug}/book.pdf`, "_blank");
   };
 
   // Keyboard navigation
@@ -441,6 +448,15 @@ export default function FlipBook({
           }`}
           style={{ zIndex: 1000 }}
         >
+          {/* View PDF Button */}
+          <button
+            onClick={handleViewPDF}
+            className="p-3 bg-black/60 text-white rounded-full border border-neutral-500/40 hover:bg-black/80 transition-all backdrop-blur-sm flex items-center justify-center"
+            aria-label="View PDF"
+          >
+            <Eye size={20} />
+          </button>
+
           {/* Download PDF Button */}
           <button
             onClick={() => {
