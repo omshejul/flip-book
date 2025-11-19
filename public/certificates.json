@@ -1,36 +1,41 @@
 {
-  "generatedAt": "2025-11-19T13:06:55.775Z",
+  "generatedAt": "2025-11-19T13:15:34.164Z",
   "count": 5,
   "certificates": [
     {
       "filename": "An_Introduction_to_Urban_Ecological_Heritage_Theories_and_Applications.pdf",
       "name": "An_Introduction_to_Urban_Ecological_Heritage_Theories_and_Applications",
       "path": "/certificates/An_Introduction_to_Urban_Ecological_Heritage_Theories_and_Applications.pdf",
-      "size": 1216677
+      "size": 1216677,
+      "thumbnail": "/certificates/thumbnails/An_Introduction_to_Urban_Ecological_Heritage_Theories_and_Applications.webp"
     },
     {
       "filename": "Heritage_Week_Volenteer.pdf",
       "name": "Heritage_Week_Volenteer",
       "path": "/certificates/Heritage_Week_Volenteer.pdf",
-      "size": 461091
+      "size": 461091,
+      "thumbnail": "/certificates/thumbnails/Heritage_Week_Volenteer.webp"
     },
     {
       "filename": "Iconography_Workshop.pdf",
       "name": "Iconography_Workshop",
       "path": "/certificates/Iconography_Workshop.pdf",
-      "size": 237738
+      "size": 237738,
+      "thumbnail": "/certificates/thumbnails/Iconography_Workshop.webp"
     },
     {
       "filename": "Vernacular_Architecture.pdf",
       "name": "Vernacular_Architecture",
       "path": "/certificates/Vernacular_Architecture.pdf",
-      "size": 1458878
+      "size": 1458878,
+      "thumbnail": "/certificates/thumbnails/Vernacular_Architecture.webp"
     },
     {
       "filename": "Vice_President of_Heritage_Club.pdf",
       "name": "Vice_President of_Heritage_Club",
       "path": "/certificates/Vice_President of_Heritage_Club.pdf",
-      "size": 300488
+      "size": 300488,
+      "thumbnail": "/certificates/thumbnails/Vice_President of_Heritage_Club.webp"
     }
   ]
 }

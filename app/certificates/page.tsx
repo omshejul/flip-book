@@ -2,13 +2,16 @@
 
 import { useState, useEffect } from "react";
 import { FileText, Link as LinkIcon, Check } from "lucide-react";
+import { ArrowLeft } from "phosphor-react";
 import Link from "next/link";
+import Image from "next/image";
 
 interface Certificate {
   filename: string;
   name: string;
   path: string;
   size: number;
+  thumbnail: string | null;
 }
 
 interface CertificatesData {
@@ -124,9 +127,10 @@ export default function CertificatesPage() {
         <div className="mb-8">
           <Link
             href="/"
-            className="inline-flex items-center text-gray-600 hover:text-gray-900 mb-4"
+            className="inline-flex border border-gray-200 rounded-md items-center gap-2 text-gray-600 hover:text-gray-900 mb-4 transition-colors px-3 py-2 hover:bg-gray-100"
           >
-            ← Back to Home
+            <ArrowLeft size={20} weight="regular" />
+            <span>Back to Home</span>
           </Link>
           <h1 className="text-4xl font-bold text-gray-900 mb-2">
             Certificates
@@ -150,9 +154,32 @@ export default function CertificatesPage() {
                 key={certificate.filename}
                 className="bg-white rounded-lg border border-gray-200 shadow-md/5 hover:shadow-md transition-shadow p-6 flex flex-col"
               >
+                {/* Thumbnail */}
+                {certificate.thumbnail ? (
+                  <div
+                    className="mb-4 relative w-full bg-gray-100 rounded-md overflow-hidden flex items-center justify-center"
+                    style={{ aspectRatio: "4/3", maxWidth: "300px" }}
+                  >
+                    <Image
+                      src={certificate.thumbnail}
+                      alt={certificate.name.replace(/_/g, " ")}
+                      width={300}
+                      height={212}
+                      className="object-contain"
+                      unoptimized
+                    />
+                  </div>
+                ) : (
+                  <div
+                    className="mb-4 w-full bg-gray-100 rounded-md flex items-center justify-center"
+                    style={{ aspectRatio: "4/3", maxWidth: "300px" }}
+                  >
+                    <FileText className="h-12 w-12 text-gray-400" />
+                  </div>
+                )}
+
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex-1 min-w-0">
-                    <FileText className="h-8 w-8 text-blue-600 mb-2" />
                     <h3
                       className="text-lg font-semibold text-gray-900 mb-1"
                       style={{
