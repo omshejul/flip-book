@@ -662,6 +662,6 @@ PAGE=4; pdftoppm -png -r 600 -scale-to 4000 -f $PAGE -l $PAGE "book.pdf" page &&
 
 # High res for AutoCAD drawings
 PAGE=4; pdftoppm -png -r 600 -scale-to 4000 -f $PAGE -l $PAGE "book.pdf" page && rm -f "page-$PAGE.webp" && magick page-$(printf "%02d" $PAGE).png -quality 95 -define webp:lossless=true "page-$PAGE.webp" && rm -f "page-$(printf "%02d" $PAGE).png"
-
+PAGE=4; pdftoppm -png -r 1200 -scale-to 8000 -f $PAGE -l $PAGE "book.pdf" page && rm -f "page-$PAGE.webp" && magick page-$(printf "%02d" $PAGE).png -quality 95 -define webp:lossless=true "page-$PAGE.webp" && rm -f "page-$(printf "%02d" $PAGE).png"
 # Low res for raster/regular pages
 PAGE=4; pdftoppm -png -r 300 -scale-to 2000 -f $PAGE -l $PAGE "book.pdf" page && rm -f "page-$PAGE.webp" && magick page-$(printf "%02d" $PAGE).png -quality 85 "page-$PAGE.webp" && rm -f "page-$(printf "%02d" $PAGE).png"
