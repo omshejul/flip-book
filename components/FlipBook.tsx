@@ -20,6 +20,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 
+import { Loader } from "lucide-react";
+
 export type BookOrientation = "portrait" | "landscape";
 
 interface FlipBookProps {
@@ -52,10 +54,18 @@ export default function FlipBook({
   const [pdfSize, setPdfSize] = useState<string>("");
   const [isLoadingSize, setIsLoadingSize] = useState(false);
 
+  // Track loading state for each page
+  const [loadedPages, setLoadedPages] = useState<Set<number>>(new Set());
+
   const pages = Array.from(
     { length: pageCount },
     (_, i) => `/books/${bookSlug}/page-${i + 1}.webp`
   );
+
+  // Handle image load
+  const handleImageLoad = (index: number) => {
+    setLoadedPages((prev) => new Set(prev).add(index));
+  };
 
   // Haptic feedback function
   const triggerHaptic = () => {
@@ -385,12 +395,29 @@ export default function FlipBook({
               className="bg-white relative"
               style={{ width: "100%", height: "100%" }}
             >
+              {/* Loading skeleton */}
+              {!loadedPages.has(index) && (
+                <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
+                  <div className="flex flex-col items-center gap-3">
+                    {/* Spinner */}
+                    <Loader className="w-4 h-4 animate-spin text-gray-500" />
+                    <p className="text-sm text-gray-500">
+                      Loading page {index + 1}...
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {/* Image */}
               <Image
                 src={page}
                 alt={`Page ${index + 1}`}
                 fill
-                className="object-contain"
+                className={`object-contain transition-opacity duration-300 ${
+                  loadedPages.has(index) ? "opacity-100" : "opacity-0"
+                }`}
                 priority={index < 2}
+                onLoadingComplete={() => handleImageLoad(index)}
               />
             </div>
           ))}
