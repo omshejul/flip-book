@@ -13,12 +13,12 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Shruti - Digital Book Reader",
+  title: "Shruti - Architecture Portfolio",
   description:
-    "Read your favorite books with a beautiful, interactive flip-book experience. Built with Next.js, React, and Tailwind CSS.",
-  keywords: ["book", "reader", "flip-book", "digital library", "reading", "ebook"],
-  authors: [{ name: "Om Shejul" }],
-  creator: "Om Shejul",
+    "An exploration of spatial narratives and architectural discourse through the lens of contemporary design philosophy.",
+  keywords: ["architecture", "portfolio", "design", "creative", "work"],
+  authors: [{ name: "Shruti" }],
+  creator: "Shruti",
   icons: {
     icon: [
       { url: "/favicon.ico", type: "image/x-icon" },
@@ -41,8 +41,8 @@ export const metadata: Metadata = {
     ],
   },
   openGraph: {
-    title: "Shruti - Digital Book Reader",
-    description: "Read your favorite books with a beautiful, interactive flip-book experience",
+    title: "Shruti - Architecture Portfolio",
+    description: "An exploration of spatial narratives and architectural discourse through the lens of contemporary design philosophy.",
     type: "website",
   },
 };
