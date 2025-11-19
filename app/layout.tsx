@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Shruti - Architecture Portfolio",
   description:
-    "An exploration of spatial narratives and architectural discourse through the lens of contemporary design philosophy.",
+    "An exploration of heritage, community, and architectural narratives through the built environment.",
   keywords: ["architecture", "portfolio", "design", "creative", "work"],
   authors: [{ name: "Shruti" }],
   creator: "Shruti",
@@ -42,7 +42,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "Shruti - Architecture Portfolio",
-    description: "An exploration of spatial narratives and architectural discourse through the lens of contemporary design philosophy.",
+    description: "An exploration of heritage, community, and architectural narratives through the built environment.",
     type: "website",
   },
 };
