@@ -148,7 +148,7 @@ export default function CertificatesPage() {
             {certificates.map((certificate) => (
               <div
                 key={certificate.filename}
-                className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow p-6 flex flex-col"
+                className="bg-white rounded-lg border border-gray-200 shadow-md/5 hover:shadow-md transition-shadow p-6 flex flex-col"
               >
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex-1 min-w-0">
