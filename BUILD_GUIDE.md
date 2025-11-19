@@ -642,3 +642,26 @@ MIT
 ---
 
 **Built with ❤️ for static flipbook viewing**
+
+
+pdftoppm -png -r 600 -scale-to 4000 -f 3 -l 3 "book.pdf" page
+rm -f "page-3.webp"
+magick page-03.png -quality 95 -define webp:lossless=true "page-3.webp"
+rm -f "page-03.png"
+
+pdftoppm -png -r 600 -scale-to 4000 -f 4 -l 4 "book.pdf" page
+rm -f "page-4.webp"
+magick page-04.png -quality 95 -define webp:lossless=true "page-4.webp"
+rm -f "page-04.png"
+
+
+
+
+PAGE=4; pdftoppm -png -r 600 -scale-to 4000 -f $PAGE -l $PAGE "book.pdf" page && rm -f "page-$PAGE.webp" && magick page-$(printf "%02d" $PAGE).png -quality 95 -define webp:lossless=true "page-$PAGE.webp" && rm -f "page-$(printf "%02d" $PAGE).png"
+
+
+# High res for AutoCAD drawings
+PAGE=4; pdftoppm -png -r 600 -scale-to 4000 -f $PAGE -l $PAGE "book.pdf" page && rm -f "page-$PAGE.webp" && magick page-$(printf "%02d" $PAGE).png -quality 95 -define webp:lossless=true "page-$PAGE.webp" && rm -f "page-$(printf "%02d" $PAGE).png"
+
+# Low res for raster/regular pages
+PAGE=4; pdftoppm -png -r 300 -scale-to 2000 -f $PAGE -l $PAGE "book.pdf" page && rm -f "page-$PAGE.webp" && magick page-$(printf "%02d" $PAGE).png -quality 85 "page-$PAGE.webp" && rm -f "page-$(printf "%02d" $PAGE).png"
