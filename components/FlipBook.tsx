@@ -451,10 +451,11 @@ export default function FlipBook({
           {/* View PDF Button */}
           <button
             onClick={handleViewPDF}
-            className="p-3 bg-black/60 text-white rounded-full border border-neutral-500/40 hover:bg-black/80 transition-all backdrop-blur-sm flex items-center justify-center"
+            className="px-4 py-2 bg-black/60 text-white rounded-full border border-neutral-500/40 hover:bg-black/80 transition-all backdrop-blur-sm flex items-center justify-center gap-2"
             aria-label="View PDF"
           >
-            <Eye size={20} />
+            <Eye size={18} />
+            <span className="text-sm font-medium">View PDF</span>
           </button>
 
           {/* Download PDF Button */}
