@@ -156,8 +156,11 @@ export default function CertificatesPage() {
               >
                 {/* Thumbnail */}
                 {certificate.thumbnail ? (
-                  <div
-                    className="mb-4 relative w-full bg-gray-100 rounded-md overflow-hidden flex items-center justify-center"
+                  <a
+                    href={certificate.path}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mb-4 relative w-full bg-gray-100 rounded-md overflow-hidden flex items-center justify-center cursor-pointer hover:opacity-90 transition-opacity"
                     style={{ aspectRatio: "4/3", maxWidth: "300px" }}
                   >
                     <Image
@@ -168,14 +171,17 @@ export default function CertificatesPage() {
                       className="object-contain"
                       unoptimized
                     />
-                  </div>
+                  </a>
                 ) : (
-                  <div
-                    className="mb-4 w-full bg-gray-100 rounded-md flex items-center justify-center"
+                  <a
+                    href={certificate.path}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mb-4 w-full bg-gray-100 rounded-md flex items-center justify-center cursor-pointer hover:opacity-90 transition-opacity"
                     style={{ aspectRatio: "4/3", maxWidth: "300px" }}
                   >
                     <FileText className="h-12 w-12 text-gray-400" />
-                  </div>
+                  </a>
                 )}
 
                 <div className="flex items-start justify-between mb-4">
