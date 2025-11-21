@@ -459,12 +459,26 @@ export default function FlipBook({
 
           {/* Page Number - Top Left on Mobile, Bottom Center on Desktop */}
           <div
-            className={`absolute px-4 py-2 bg-black/40 text-white rounded-lg pointer-events-auto backdrop-blur-sm ${
+            className={`absolute px-4 py-2 bg-black/40 text-white rounded-full border border-neutral-500/10 pointer-events-auto backdrop-blur-sm ${
               isMobile ? "top-4 left-4" : "bottom-8 left-1/2 -translate-x-1/2"
             }`}
             style={{ zIndex: 1000 }}
           >
-            Page {currentPage + 1} / {pageCount}
+            {isMobile ? (
+              // Mobile/Portrait: Show single page number
+              <>
+                Page {currentPage + 1} / {pageCount}
+              </>
+            ) : (
+              // Desktop Landscape: Show spread range (e.g., "Page 1-2")
+              (() => {
+                return (
+                  <>
+                    Page {currentPage + 1}-{currentPage + 2} / {pageCount}
+                  </>
+                );
+              })()
+            )}
           </div>
         </div>
 
