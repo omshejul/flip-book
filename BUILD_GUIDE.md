@@ -665,11 +665,12 @@ PAGE=4; pdftoppm -png -r 600 -scale-to 4000 -f $PAGE -l $PAGE "book.pdf" page &&
 PAGE=4; pdftoppm -png -r 1200 -scale-to 8000 -f $PAGE -l $PAGE "book.pdf" page && rm -f "page-$PAGE.webp" && magick page-$(printf "%02d" $PAGE).png -quality 95 -define webp:lossless=true "page-$PAGE.webp" && rm -f "page-$(printf "%02d" $PAGE).png"
 # Low res for raster/regular pages
 PAGE=4; pdftoppm -png -r 300 -scale-to 2000 -f $PAGE -l $PAGE "book.pdf" page && rm -f "page-$PAGE.webp" && magick page-$(printf "%02d" $PAGE).png -quality 85 "page-$PAGE.webp" && rm -f "page-$(printf "%02d" $PAGE).png"
+PAGE=26; pdftoppm -png -r 400 -scale-to 3000 -f $PAGE -l $PAGE "book.pdf" page && rm -f "page-$PAGE.webp" && magick page-$(printf "%02d" $PAGE).png -quality 85 "page-$PAGE.webp" && rm -f "page-$(printf "%02d" $PAGE).png"
 
 
 
 <!-- loop for n pages -->
-for PAGE in {1..24}; do
+for PAGE in {1..26}; do
   pdftoppm -png -r 1200 -scale-to 8000 -f $PAGE -l $PAGE "book.pdf" page && \
   rm -f "page-$PAGE.webp" && \
   magick page-$(printf "%02d" $PAGE).png -quality 85 "page-$PAGE.webp" && \
@@ -677,6 +678,12 @@ for PAGE in {1..24}; do
 done
 for PAGE in {3..12}; do
   pdftoppm -png -r 400 -scale-to 4000 -f $PAGE -l $PAGE "book.pdf" page && \
+  rm -f "page-$PAGE.webp" && \
+  magick page-$(printf "%02d" $PAGE).png -quality 85 "page-$PAGE.webp" && \
+  rm -f "page-$(printf "%02d" $PAGE).png"
+done
+for PAGE in {13..21}; do
+  pdftoppm -png -r 1200 -scale-to 8000 -f $PAGE -l $PAGE "book.pdf" page && \
   rm -f "page-$PAGE.webp" && \
   magick page-$(printf "%02d" $PAGE).png -quality 85 "page-$PAGE.webp" && \
   rm -f "page-$(printf "%02d" $PAGE).png"
